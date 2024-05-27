@@ -1,8 +1,8 @@
-name: dauillama
+name: Abby
 description: "Flutter Ollama UI"
 publish_to: 'none'
 
-version: 1.2.0
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.3.3 <4.0.0'
@@ -25,7 +25,7 @@ dependencies:
   provider: ^6.1.1
   shared_preferences: ^2.2.3
   sqflite_common_ffi: ^2.3.3
-  url_launcher: ^6.2.6
+  sqflite_common_ffi_web: '>=0.1.0-dev.1'
   uuid: ^4.4.0
 
 dev_dependencies:
@@ -38,7 +38,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/app_icons/tete_32.png
+    - assets/app_icons/abbylogo.png
+    - assets/persona/Portrait_Placeholder.png
+    - assets/persona/Abby.webp
   fonts:
     - family: SourceCode
       fonts:

@@ -120,33 +120,8 @@ class ChatController {
         b64Image = base64Encode(await image.readAsBytes());
       }
 
-      final generateChatCompletionRequest = GenerateChatCompletionRequest(
-        model: name,
-        messages: [
-          for (final qa in conversation.value.messages) ...[
-            Message(role: MessageRole.user, content: qa.$1),
-            Message(role: MessageRole.assistant, content: qa.$2),
-          ],
-          Message(
-            role: MessageRole.user,
-            content: question,
-            images: b64Image != null ? [b64Image] : null,
-          ),
-        ],
-      );
-
-      final streamResponse = _client.generateChatCompletionStream(
-        request: generateChatCompletionRequest,
-      );
-
-      await for (final chunk in streamResponse) {
-        lastReply.value = (
-          lastReply.value.$1,
-          '${lastReply.value.$2}${chunk.message?.content ?? ''}'
-        );
-
-        scrollToEnd();
-      }
+      await _generateChatCompletion(_client, name, question, b64Image)
+          .whenComplete(() => scrollToEnd());
 
       final messages = conversation.value.messages;
 
@@ -163,8 +138,32 @@ class ChatController {
       loading.value = false;
       promptFieldController.clear();
 
-      Future.delayed(const Duration(milliseconds: 100), scrollToEnd);
+      //Future.delayed(const Duration(milliseconds: 100), scrollToEnd);
     }
+  }
+
+  Future<void> _generateChatCompletion(final OllamaClient client, String name,
+      String question, String? b64Image) async {
+    final generated = await client.generateChatCompletion(
+      request: GenerateChatCompletionRequest(
+        model: name,
+        messages: [
+          for (final qa in conversation.value.messages) ...[
+            Message(role: MessageRole.user, content: qa.$1),
+            Message(role: MessageRole.assistant, content: qa.$2),
+          ],
+          Message(
+            role: MessageRole.user,
+            content: question,
+            images: b64Image != null ? [b64Image] : null,
+          ),
+        ],
+      ),
+    );
+    lastReply.value = (
+      lastReply.value.$1,
+      '${lastReply.value.$2}${generated.message?.content}'
+    );
   }
 
   void scrollToEnd() {

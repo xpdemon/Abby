@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../async_result.dart';
 import '../model_controller.dart';
-import 'model_library_button.dart';
 
 class AddModelController {
   final _log = Logger('AddModelController');
@@ -64,27 +63,16 @@ class AddModelController {
 }
 
 class AddModelDialog extends StatelessWidget {
-  final TextEditingController fieldController = TextEditingController();
+  final ValueNotifier<String> modelName = ValueNotifier('');
 
   AddModelDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final textTheme = Theme.of(context).textTheme;
 
     final controller = context.read<AddModelController>();
     final mainController = context.read<ModelController>();
-
-    Future<void> onDownloadComplete(String newModelName) async {
-      await mainController.loadModels();
-      mainController.selectModelNamed(newModelName);
-      if (context.mounted) {
-        Navigator.of(context).popUntil(
-          (route) => route.settings.name == '/',
-        );
-      }
-    }
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -108,46 +96,57 @@ class AddModelDialog extends StatelessWidget {
                       Navigator.of(context).pop();
                     }
                   },
-                  icon: Icon(Icons.close, color: theme.colorScheme.secondary),
+                  icon: const Icon(Icons.close),
                 ),
               ],
             ),
-            const Divider(height: 28),
-            ListenableBuilder(
-              listenable:
-                  Listenable.merge([fieldController, controller.pullProgress]),
-              builder: (context, _) {
-                final name = fieldController.text;
-                final pullState = controller.pullProgress.value;
-
-                return Row(
-                  children: [
-                    Expanded(
-                      child: _NameField(
-                        fieldController: fieldController,
-                        onEditingComplete: () {
-                          if (name.isNotEmpty && !pullState.isPending) {
-                            controller.addModel(
-                              name,
-                              onComplete: onDownloadComplete,
-                            );
-                          }
-                        },
-                      ),
+            const Divider(height: 18),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      suffixIcon: modelName.value.isNotEmpty
+                          ? IconButton(
+                              onPressed: () => modelName.value = '',
+                              icon: const Icon(Icons.close),
+                              iconSize: 14,
+                            )
+                          : null,
+                      suffixIconConstraints:
+                          const BoxConstraints(maxHeight: 32, maxWidth: 32),
+                      isDense: true,
                     ),
-                    const SizedBox(width: 12),
-                    switch (pullState) {
-                      Data() => IconButton(
+                    onChanged: (value) => modelName.value = value,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                ListenableBuilder(
+                  listenable:
+                      Listenable.merge([modelName, controller.pullProgress]),
+                  builder: (context, _) {
+                    final name = modelName.value;
+                    final pullState = controller.pullProgress.value;
+
+                    return switch (pullState) {
+                      Data() /* when data == null*/ => IconButton(
                           onPressed: name.isNotEmpty
                               ? () => controller.addModel(
                                     name,
-                                    onComplete: onDownloadComplete,
+                                    onComplete: (newModelName) async {
+                                      await mainController.loadModels();
+                                      mainController
+                                          .selectModelNamed(newModelName);
+                                      if (context.mounted) {
+                                        Navigator.of(context).popUntil(
+                                          (route) => route.settings.name == '/',
+                                        );
+                                      }
+                                    },
                                   )
                               : null,
-                          icon: Icon(
-                            Icons.cloud_download,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          icon: const Icon(Icons.cloud_download),
                         ),
                       Pending(:final progress) => SizedBox(
                           width: 20,
@@ -160,50 +159,14 @@ class AddModelDialog extends StatelessWidget {
                       DataError() => const Center(
                           child: Icon(Icons.warning, color: Colors.deepOrange),
                         )
-                    },
-                  ],
-                );
-              },
+                    };
+                  },
+                ),
+              ],
             ),
-            const Divider(height: 28),
-            const ModelLibraryButton(),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _NameField extends StatelessWidget {
-  final TextEditingController fieldController;
-
-  final VoidCallback onEditingComplete;
-
-  const _NameField({
-    required this.fieldController,
-    required this.onEditingComplete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final name = fieldController.text;
-
-    return TextField(
-      controller: fieldController,
-      decoration: InputDecoration(
-        label: const Text('Model name'),
-        isDense: true,
-        suffixIcon: name.isNotEmpty
-            ? IconButton(
-                onPressed: fieldController.clear,
-                icon: const Icon(Icons.close),
-                iconSize: 14,
-              )
-            : null,
-        suffixIconConstraints:
-            const BoxConstraints(maxHeight: 32, maxWidth: 32),
-      ),
-      onEditingComplete: onEditingComplete,
     );
   }
 }

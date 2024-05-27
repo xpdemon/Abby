@@ -1,9 +1,9 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import 'model.dart';
 
@@ -15,15 +15,20 @@ enum Table { conversation }
 
 /// sqlite DB abstraction
 Future<Database> initDB() async {
-  if( Platform.isWindows) sqfliteFfiInit();
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+    const dirPath = '/assets/db';
+    final path = join(dirPath, dbFileName);
+    _log.info('DbPath : $path');
+    return openDatabase(path, onCreate: _createDb, version: 1);
 
-  databaseFactory = databaseFactoryFfi;
-
-  final documentsDirectory = await getApplicationDocumentsDirectory();
-  final path = join(documentsDirectory.path, dbFileName);
-  _log.info('DbPath : $path');
-
-  return openDatabase(path, onCreate: _createDb, version: 1);
+  } else {
+    databaseFactory = databaseFactoryFfi;
+    final documentsDirectory = await getApplicationDocumentsDirectory();
+    final path = join(documentsDirectory.path, dbFileName);
+    _log.info('DbPath : $path');
+    return openDatabase(path, onCreate: _createDb, version: 1);
+  }
 }
 
 Future<void> _createDb(Database db, [int? version]) => db.execute('''

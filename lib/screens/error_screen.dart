@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../model_controller.dart';
 import '../widgets/add_model_dialog.dart';
-import '../widgets/model_library_button.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String msg;
@@ -14,15 +13,12 @@ class ErrorScreen extends StatelessWidget {
 
   final String errorActionLabel;
 
-  final Widget? secondaryActionButton;
-
   const ErrorScreen({
     super.key,
     required this.msg,
     required this.errorAction,
     required this.errorActionIcon,
     required this.errorActionLabel,
-    this.secondaryActionButton,
   });
 
   @override
@@ -47,10 +43,6 @@ class ErrorScreen extends StatelessWidget {
               icon: Icon(errorActionIcon),
               label: Text(errorActionLabel),
             ),
-            if (secondaryActionButton != null) ...[
-              const Divider(height: 18),
-              secondaryActionButton!,
-            ],
           ],
         ),
       ),
@@ -98,7 +90,6 @@ class NoModelErrorScreen extends StatelessWidget {
       },
       errorActionLabel: 'Pull a Model',
       errorActionIcon: Icons.download,
-      secondaryActionButton: const ModelLibraryButton(),
     );
   }
 }

@@ -20,7 +20,7 @@ void main() async {
     RootProvider(
       prefs: prefs,
       db: db,
-      ollamaBaseUrl: Platform.environment['OLLAMA_BASE_URL'],
+      ollamaBaseUrl: 'http://127.0.0.1:11434/api',
       child: const App(),
     ),
   );

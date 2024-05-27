@@ -17,29 +17,29 @@ class DeleteModelButton extends StatelessWidget {
     return IconButton(
       tooltip: 'Delete model',
       onPressed: () async {
-        final confirm = await showAdaptiveDialog<bool>(
+        final confirm = await showCupertinoDialog(
           context: context,
           builder: (context) => CupertinoAlertDialog(
-            title: Text('Delete ${model.name} ? '),
+            title: const Text('Confirm'),
             actions: [
               CupertinoDialogAction(
                 isDestructiveAction: true,
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Delete'),
+                child: const Text('Yes'),
               ),
               CupertinoDialogAction(
-                child: const Text('Cancel'),
+                child: const Text('No'),
                 onPressed: () => Navigator.of(context).pop(false),
               ),
             ],
           ),
         );
-        if (confirm ?? false) {
+        if (confirm == true) {
           controller.deleteModel(model);
         }
       },
       icon: const Icon(Icons.delete),
-      color: Theme.of(context).colorScheme.secondary,
+      color: Colors.deepOrange.shade900,
     );
   }
 }

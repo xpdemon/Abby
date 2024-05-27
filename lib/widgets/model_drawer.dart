@@ -21,7 +21,7 @@ class ModelMenuDrawer extends StatelessWidget {
     final filterNotifier = ValueNotifier('');
 
     return Drawer(
-      width: 360,
+      width: 420,
       child: ListenableBuilder(
         listenable: Listenable.merge(
           [controller.models, controller.currentModel],
@@ -111,16 +111,18 @@ class _ModelList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => ListView(
-        children: models
-            .map(
-              (model) => _ModelTile(
-                model: model,
-                selected: currentModel == model,
-              ),
-            )
-            .toList(),
-      );
+  Widget build(BuildContext context) {
+    return ListView(
+      children: models
+          .map(
+            (model) => _ModelTile(
+              model: model,
+              selected: currentModel == model,
+            ),
+          )
+          .toList(),
+    );
+  }
 }
 
 class _ModelTile extends StatefulWidget {
@@ -153,11 +155,13 @@ class _ModelTileState extends State<_ModelTile> {
       onHover: (_) => setState(() => hovered = true),
       onExit: (_) => setState(() => hovered = false),
       child: ListTile(
+        selectedColor: Colors.blueGrey.shade300,
         title: Text(model.name ?? '/'),
         subtitle: Text(
           '${(model.size ?? 0).asDiskSize()} - updated ${model.formattedLastUpdate}',
         ),
         dense: true,
+        selectedTileColor: Colors.blueGrey.shade900,
         leading: const Icon(Icons.psychology),
         trailing: hovered || widget.selected
             ? Row(
@@ -192,26 +196,37 @@ class _FilterField extends StatelessWidget {
   _FilterField({required this.onFilterChanged});
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            label: const Text('Search model'),
-            prefixIcon: const Icon(Icons.search),
-            suffixIcon: IconButton(
-              onPressed: () {
-                controller.clear();
-                onFilterChanged('');
-              },
-              icon: const Icon(Icons.close),
-              iconSize: 14,
-            ),
-            suffixIconConstraints:
-                const BoxConstraints(maxHeight: 32, maxWidth: 32),
-            isDense: true,
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
-          onChanged: onFilterChanged,
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+          fillColor: Theme.of(context).canvasColor,
+          filled: true,
+          prefixIcon: const Icon(Icons.search),
+          suffixIcon: IconButton(
+            onPressed: () {
+              controller.clear();
+              onFilterChanged('');
+            },
+            icon: const Icon(Icons.close),
+            iconSize: 14,
+          ),
+          suffixIconConstraints:
+              const BoxConstraints(maxHeight: 32, maxWidth: 32),
+          isDense: true,
         ),
-      );
+        onChanged: onFilterChanged,
+      ),
+    );
+  }
 }

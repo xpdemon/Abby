@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
@@ -36,6 +37,15 @@ class ChatScreen extends StatelessWidget {
             },
             onDeleteChat: chatController.deleteConversation,
             onNewChat: chatController.newConversation,
+          ),
+          Column(
+            verticalDirection: VerticalDirection.up,
+            children: [
+              Image.asset(
+                'assets/persona/Abby.webp',
+                fit: BoxFit.contain,width: 300,height: 400,
+              ),
+            ],
           ),
           Expanded(
             child: ListenableBuilder(
@@ -119,11 +129,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       title: Row(
         children: [
-          Image.asset('assets/app_icons/tete_32.png', width: 32),
+          Image.asset('assets/app_icons/abbylogo.png', width: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
-              'DauiLlama',
+              'Abby',
               style: TextStyle(color: Colors.blueGrey.shade700),
             ),
           ),
