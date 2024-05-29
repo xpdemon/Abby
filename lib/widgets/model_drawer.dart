@@ -49,7 +49,7 @@ class ModelMenuDrawer extends StatelessWidget {
                     child: ValueListenableBuilder(
                       valueListenable: filterNotifier,
                       builder: (context, filter, _) {
-                        bool match(Model element) => (element.name ?? '/')
+                        bool match(Model element) => (element.model ?? '/')
                             .toLowerCase()
                             .contains(filter.toLowerCase());
 
@@ -156,7 +156,7 @@ class _ModelTileState extends State<_ModelTile> {
       onExit: (_) => setState(() => hovered = false),
       child: ListTile(
         selectedColor: Colors.blueGrey.shade300,
-        title: Text(model.name ?? '/'),
+        title: Text(model.model ?? '/'),
         subtitle: Text(
           '${(model.size ?? 0).asDiskSize()} - updated ${model.formattedLastUpdate}',
         ),

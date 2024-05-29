@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
@@ -143,7 +142,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ? Row(
                     children: [
                       Text(
-                        currentModel.name ?? '/',
+                        currentModel.model ?? '/',
                         style: const TextStyle(color: Colors.blueGrey),
                       ),
                       IconButton(

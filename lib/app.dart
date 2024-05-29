@@ -1,7 +1,4 @@
-import 'package:fetch_client/fetch_client.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
 import 'async_result.dart';

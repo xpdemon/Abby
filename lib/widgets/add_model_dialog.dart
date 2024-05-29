@@ -42,7 +42,7 @@ class AddModelController {
 
     final streamResponse = _client.pullModelStream(
       request: PullModelRequest(
-        name: name,
+        model: name,
         stream: true,
       ),
     );

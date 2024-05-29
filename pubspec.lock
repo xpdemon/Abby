@@ -344,6 +344,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
+  ndjson:
+    dependency: "direct main"
+    description:
+      name: ndjson
+      sha256: "576e2fd911c841a2226c6b726812c9f4dc7588c09e17568eadfbaa7ab0d21307"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   nested:
     dependency: transitive
     description:
@@ -356,10 +364,10 @@ packages:
     dependency: "direct main"
     description:
       name: ollama_dart
-      sha256: "0af52c17a6dda9f6a30d79b9529bf38128d9b01dabd9d5f625040a32035eec24"
+      sha256: "5e83b6b77785e7dbc454ff70ab14883e6cc1e6157c8df4e84da77845bc074df9"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.3+1"
+    version: "0.1.0+1"
   path:
     dependency: "direct main"
     description:

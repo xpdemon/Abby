@@ -50,7 +50,7 @@ class ChatController {
         _conversationService = conversationService,
         conversation = ValueNotifier(
           initialConversation ??
-              emptyConversationWith(model.value?.name ?? '/'),
+              emptyConversationWith(model.value?.model ?? '/'),
         );
 
   Future<void> loadHistory() async {
@@ -65,47 +65,11 @@ class ChatController {
     }
   }
 
-  /*Future<void> generate() async {
-    final name = model.name;
-
-    final image = selectedImage.value;
-    String? b64Image;
-
-    if (image != null) {
-      b64Image = base64Encode(await image.readAsBytes());
-    }
-
-    if (name != null) {
-      loading.value = true;
-      lastReply.value = (promptFieldController.text, '');
-      final request = GenerateCompletionRequest(
-        model: name,
-        prompt: promptFieldController.text,
-        images: b64Image != null ? [b64Image] : null,
-      );
-      final streamResponse = _client.generateCompletionStream(request: request);
-
-      await for (final chunk in streamResponse) {
-        lastReply.value = (
-          lastReply.value.$1,
-          '${lastReply.value.$2}${chunk.response ?? ''}'
-        );
-      }
-
-      final messages = conversation.value.messages;
-      conversation.value = conversation.value
-          .copyWith(newMessages: messages..add(lastReply.value));
-
-      loading.value = false;
-      promptFieldController.clear();
-    }
-  }*/
-
   Future<void> chat() async {
     if (model.value == null) return;
     scrollController = ScrollController();
 
-    final name = model.value!.name;
+    final name = model.value!.model;
     loading.value = true;
 
     if (name != null) {
@@ -120,8 +84,35 @@ class ChatController {
         b64Image = base64Encode(await image.readAsBytes());
       }
 
-      await _generateChatCompletion(_client, name, question, b64Image)
-          .whenComplete(() => scrollToEnd());
+
+      final generateChatCompletionRequest = GenerateChatCompletionRequest(
+        model: name,
+        messages: [
+          for (final qa in conversation.value.messages) ...[
+            Message(role: MessageRole.user, content: qa.$1),
+            Message(role: MessageRole.assistant, content: qa.$2),
+          ],
+          Message(
+            role: MessageRole.user,
+            content: question,
+            images: b64Image != null ? [b64Image] : null,
+          ),
+        ],
+      );
+
+      final streamResponse = _client.generateChatCompletionStream(
+        request: generateChatCompletionRequest,
+      );
+
+
+
+      await for (final chunk in streamResponse) {
+        lastReply.value = (
+          lastReply.value.$1,
+          '${lastReply.value.$2}${chunk.message?.content ?? ''}'
+        );
+        scrollToEnd();
+      }
 
       final messages = conversation.value.messages;
 
@@ -143,7 +134,7 @@ class ChatController {
   }
 
   Future<void> _generateChatCompletion(final OllamaClient client, String name,
-      String question, String? b64Image) async {
+      String question, String? b64Image,) async {
     final generated = await client.generateChatCompletion(
       request: GenerateChatCompletionRequest(
         model: name,
@@ -191,14 +182,14 @@ class ChatController {
   void newConversation() {
     conversation.value = Conversation(
       lastUpdate: DateTime.now(),
-      model: model.value?.name ?? '/',
+      model: model.value?.model ?? '/',
       title: 'New Chat',
       messages: [],
     );
   }
 
   Future<void> deleteConversation(Conversation deletecConversation) async {
-    conversation.value = emptyConversationWith(model.value?.name ?? '/');
+    conversation.value = emptyConversationWith(model.value?.model ?? '/');
     await _conversationService.deleteConversation(deletecConversation);
     loadHistory();
   }
