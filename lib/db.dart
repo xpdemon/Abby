@@ -30,7 +30,8 @@ Future<Database> initDB() async {
   }
 }
 
-Future<void> _createDb(Database db, [int? version]) => db.execute('''
+Future<void> _createDb(Database db, [int? version]) async {
+  db..execute('''
 CREATE TABLE IF NOT EXISTS ${Table.conversation.name}(
   id TEXT NOT NULL PRIMARY KEY,
   model TEXT NOT NULL,
@@ -38,7 +39,10 @@ CREATE TABLE IF NOT EXISTS ${Table.conversation.name}(
   lastUpdate TEXT NOT NULL,
   title TEXT NOT NULL,
   messages TEXT
-),
+)
+''')
+
+  ..execute('''
 CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
   id TEXT NOT NULL PRIMARY KEY,    
   lastUpdate TEXT NOT NULL,
@@ -52,6 +56,7 @@ CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
 )
 
 ''');
+}
 
 class PersonaService {
   final Database _db;
