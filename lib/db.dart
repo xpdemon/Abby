@@ -11,7 +11,7 @@ const dbFileName = 'db.db';
 
 final _log = Logger('Db');
 
-enum Table { conversation }
+enum Table { conversation, persona }
 
 /// sqlite DB abstraction
 Future<Database> initDB() async {
@@ -21,7 +21,6 @@ Future<Database> initDB() async {
     final path = join(dirPath, dbFileName);
     _log.info('DbPath : $path');
     return openDatabase(path, onCreate: _createDb, version: 1);
-
   } else {
     databaseFactory = databaseFactoryFfi;
     final documentsDirectory = await getApplicationDocumentsDirectory();
@@ -39,8 +38,48 @@ CREATE TABLE IF NOT EXISTS ${Table.conversation.name}(
   lastUpdate TEXT NOT NULL,
   title TEXT NOT NULL,
   messages TEXT
+),
+CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
+  id TEXT NOT NULL PRIMARY KEY,    
+  lastUpdate TEXT NOT NULL,
+  name TEXT,
+  prompt TEXT
+  portraitId TEXT,
+  hobby TEXT,
+  personality TEXT,
+  job TEXT,
+  userProperties TEXT
 )
+
 ''');
+
+class PersonaService {
+  final Database _db;
+
+  PersonaService(this._db);
+
+  Future<void> savePersona(Persona persona) async {
+    await _db.insert(
+      Table.persona.name,
+      persona.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> deletePersona(Persona persona) async {
+    await _db.delete(
+      Table.persona.name,
+      where: 'id = ?',
+      whereArgs: [persona.id],
+    );
+  }
+
+  Future<List<Persona>> loadPersona() async {
+    final rawPersona =
+        await _db.query(Table.persona.name, orderBy: 'name DESC');
+    return rawPersona.map(Persona.fromMap).toList();
+  }
+}
 
 class ConversationService {
   final Database _db;

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/cupertino.dart';
@@ -88,10 +89,10 @@ class ChatController {
       final generateChatCompletionRequest = GenerateChatCompletionRequest(
         model: name,
         messages: [
-          for (final qa in conversation.value.messages) ...[
-            Message(role: MessageRole.user, content: qa.$1),
-            Message(role: MessageRole.assistant, content: qa.$2),
-          ],
+          const Message(
+            role: MessageRole.system,
+            content:  "Tu est une assistante qui se nomme Abby. Réponds à l'utilisateur toujours en langue française en utilisant le Markdown. ",
+          ),
           Message(
             role: MessageRole.user,
             content: question,
@@ -103,8 +104,6 @@ class ChatController {
       final streamResponse = _client.generateChatCompletionStream(
         request: generateChatCompletionRequest,
       );
-
-
 
       await for (final chunk in streamResponse) {
         lastReply.value = (
@@ -129,32 +128,8 @@ class ChatController {
       loading.value = false;
       promptFieldController.clear();
 
-      //Future.delayed(const Duration(milliseconds: 100), scrollToEnd);
+      Future.delayed(const Duration(milliseconds: 100), scrollToEnd);
     }
-  }
-
-  Future<void> _generateChatCompletion(final OllamaClient client, String name,
-      String question, String? b64Image,) async {
-    final generated = await client.generateChatCompletion(
-      request: GenerateChatCompletionRequest(
-        model: name,
-        messages: [
-          for (final qa in conversation.value.messages) ...[
-            Message(role: MessageRole.user, content: qa.$1),
-            Message(role: MessageRole.assistant, content: qa.$2),
-          ],
-          Message(
-            role: MessageRole.user,
-            content: question,
-            images: b64Image != null ? [b64Image] : null,
-          ),
-        ],
-      ),
-    );
-    lastReply.value = (
-      lastReply.value.$1,
-      '${lastReply.value.$2}${generated.message?.content}'
-    );
   }
 
   void scrollToEnd() {

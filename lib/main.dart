@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +15,6 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final db = await initDB();
-
   runApp(
     RootProvider(
       prefs: prefs,
@@ -23,4 +23,5 @@ void main() async {
       child: const App(),
     ),
   );
+
 }
