@@ -35,6 +35,8 @@ class _RootProviderState extends State<RootProvider> {
   late final ConversationService conversationService =
       ConversationService(widget.db);
 
+  late final PersonaService personaService = PersonaService(widget.db, widget.prefs)..init();
+
   late final modelController = ModelController(
     client: ollamaClient,
     prefs: widget.prefs,
@@ -47,6 +49,7 @@ class _RootProviderState extends State<RootProvider> {
           Provider.value(value: conversationService),
           Provider.value(value: widget.prefs),
           Provider.value(value: modelController),
+          Provider.value(value: personaService),
           ChangeNotifierProvider(
             create: (context) => ThemeController(Brightness.dark),
           ),

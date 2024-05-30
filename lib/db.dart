@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
+import 'package:ollama_dart/ollama_dart.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
+import 'async_result.dart';
 import 'model.dart';
 
 const dbFileName = 'db.db';
@@ -31,7 +34,8 @@ Future<Database> initDB() async {
 }
 
 Future<void> _createDb(Database db, [int? version]) async {
-  db..execute('''
+  db
+    ..execute('''
 CREATE TABLE IF NOT EXISTS ${Table.conversation.name}(
   id TEXT NOT NULL PRIMARY KEY,
   model TEXT NOT NULL,
@@ -41,8 +45,7 @@ CREATE TABLE IF NOT EXISTS ${Table.conversation.name}(
   messages TEXT
 )
 ''')
-
-  ..execute('''
+    ..execute('''
 CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
   id TEXT NOT NULL PRIMARY KEY,    
   lastUpdate TEXT NOT NULL,
@@ -52,7 +55,8 @@ CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
   hobby TEXT,
   personality TEXT,
   job TEXT,
-  userProperties TEXT
+  userProperties TEXT,
+  isDefault BOOLEAN
 )
 
 ''');
@@ -60,8 +64,26 @@ CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
 
 class PersonaService {
   final Database _db;
+  final SharedPreferences prefs;
 
-  PersonaService(this._db);
+  final ValueNotifier<AsyncData<List<Persona>>> personas =
+      ValueNotifier(const Data([]));
+
+  final ValueNotifier<Persona?> defaultPersona = ValueNotifier(null);
+
+  PersonaService(this._db, this.prefs);
+
+  Future<void> init() async {
+    await loadPersonas();
+  }
+
+  Future<void> selectPersona(final Persona? persona) async {
+    if (persona == null) return;
+
+    (await SharedPreferences.getInstance())
+        .setString('currentPersona', persona.name);
+    defaultPersona.value = persona;
+  }
 
   Future<void> savePersona(Persona persona) async {
     await _db.insert(
@@ -79,7 +101,22 @@ class PersonaService {
     );
   }
 
-  Future<List<Persona>> loadPersona() async {
+  Future<Persona> findPersonaByDefault() async {
+    final rawPersona = await _db.query(
+      Table.persona.name,
+      where: 'isDefault = true',
+    );
+    return rawPersona.map(Persona.fromMap).first;
+  }
+
+  Future<void> loadPersonas() async {
+    personas.value = const Pending();
+    final resp = await findPersonas();
+    personas.value = Data(resp);
+    defaultPersona.value = resp.where((p) => p.isDefault).firstOrNull;
+  }
+
+  Future<List<Persona>> findPersonas() async {
     final rawPersona =
         await _db.query(Table.persona.name, orderBy: 'name DESC');
     return rawPersona.map(Persona.fromMap).toList();

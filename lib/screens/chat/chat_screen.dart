@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 
+import '../../db.dart';
 import '../../markdown/code_element_builder.dart';
 import '../../markdown/highlighter.dart';
 import '../../model_controller.dart';
@@ -11,6 +12,7 @@ import '../../themes.dart';
 import '../../widgets/chat_history/chat_history_view.dart';
 import '../../widgets/model_drawer.dart';
 import '../../widgets/model_info_view.dart';
+import '../../widgets/persona_drawer.dart';
 import '../../widgets/prompt_field.dart';
 import 'chat_controller.dart';
 
@@ -22,10 +24,12 @@ class ChatScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final modelController = context.read<ModelController>();
     final chatController = context.read<ChatController>();
+    final personaService = context.read<PersonaService>();
 
     return Scaffold(
       appBar: const MainAppBar(),
       drawer: const ModelMenuDrawer(),
+      endDrawer: const PersonaDrawer(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -37,6 +41,7 @@ class ChatScreen extends StatelessWidget {
             onDeleteChat: chatController.deleteConversation,
             onNewChat: chatController.newConversation,
           ),
+
           Column(
             verticalDirection: VerticalDirection.up,
             children: [
@@ -157,10 +162,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   )
                 : const SizedBox.shrink(),
           ),
+          IconButton(onPressed: Scaffold.of(context).openEndDrawer, icon: const Icon(Icons.accessibility_new_outlined)),
         ],
       ),
       centerTitle: false,
-      actions: const [
+      actions:  const [
         ThemeButton(),
       ],
     );

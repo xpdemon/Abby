@@ -22,6 +22,7 @@ class Persona {
   final String personality;
   final String job;
   final List<String> userProperties;
+  final bool isDefault;
 
   String get formattedDate => DateFormat('dd/MM/yyyy').format(lastUpdate);
 
@@ -33,6 +34,7 @@ class Persona {
     required this.personality,
     required this.job,
     required this.userProperties,
+    required this.isDefault,
     String? portraitId,
     String? id,
   })  : id = id ?? const Uuid().v4(),
@@ -40,7 +42,7 @@ class Persona {
 
   @override
   String toString() {
-    return 'Persona{id: $id, lastUpdate: $lastUpdate,name: $name, prompt: $prompt, portraitId: $portraitId, hobby: $hobby, job: $job, personality: $personality, userProperties: $userProperties}';
+    return 'Persona{id: $id, lastUpdate: $lastUpdate,name: $name, prompt: $prompt, portraitId: $portraitId, hobby: $hobby, job: $job, personality: $personality, userProperties: $userProperties, isDefault: $isDefault}';
   }
 
   Map<String, dynamic> toMap() => {
@@ -53,10 +55,10 @@ class Persona {
         'job': job,
         'personality': personality,
         'userProperties': jsonEncode(userProperties),
+        'isDefault': isDefault,
       };
 
   factory Persona.fromMap(Map<String, dynamic> data) {
-
     return Persona(
       id: data['id'],
       lastUpdate: DateTime.parse(data['lastUpdate']),
@@ -67,6 +69,7 @@ class Persona {
       job: data['job'],
       personality: data['personality'],
       userProperties: List.from(jsonDecode(data['userProperties'])),
+      isDefault: data['isDefault'],
     );
   }
 }
