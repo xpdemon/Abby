@@ -4,7 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'async_result.dart';
+import '../async_result.dart';
 
 class ModelController {
   final _log = Logger('ModelController');

@@ -1,12 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'async_result.dart';
-import 'model_controller.dart';
-import 'screens/chat/chat_controller.dart';
+import 'controller/model_controller.dart';
+import 'controller/chat_controller.dart';
 import 'screens/chat/chat_screen.dart';
-import 'screens/error_screen.dart';
-import 'theme.dart';
+import 'screens/errors/error_screen.dart';
+import 'services/persona_service.dart';
+import 'util/theme.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -15,9 +18,7 @@ class App extends StatelessWidget {
   Widget build(final BuildContext context) {
     final themeController = context.watch<ThemeController>();
     final modelController = context.read<ModelController>();
-
-
-
+    final personaService = context.read<PersonaService>();
 
     return MaterialApp(
       home: ValueListenableBuilder(
@@ -34,8 +35,12 @@ class App extends StatelessWidget {
                       create: (context) => ChatController(
                         client: modelController.client,
                         conversationService: context.read(),
+                        personaService: context.read(),
+                        persona: personaService.currentPersona,
                         model: modelController.currentModel,
-                      )..loadHistory(),
+                      )
+                        ..loadHistory()
+                        ,
                       child: const ChatScreen(),
                     ),
             ),
@@ -46,4 +51,6 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     );
   }
+
+
 }

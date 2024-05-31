@@ -4,9 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'db.dart';
-import 'model_controller.dart';
-import 'theme.dart';
+import 'controller/model_controller.dart';
+import 'services/conversation_service.dart';
+import 'services/persona_service.dart';
+import 'util/theme.dart';
 
 class RootProvider extends StatefulWidget {
   final SharedPreferences prefs;
@@ -35,6 +36,8 @@ class _RootProviderState extends State<RootProvider> {
   late final ConversationService conversationService =
       ConversationService(widget.db);
 
+  late final PersonaService personaService = PersonaService(widget.db, widget.prefs)..init();
+
   late final modelController = ModelController(
     client: ollamaClient,
     prefs: widget.prefs,
@@ -47,6 +50,7 @@ class _RootProviderState extends State<RootProvider> {
           Provider.value(value: conversationService),
           Provider.value(value: widget.prefs),
           Provider.value(value: modelController),
+          Provider.value(value: personaService),
           ChangeNotifierProvider(
             create: (context) => ThemeController(Brightness.dark),
           ),

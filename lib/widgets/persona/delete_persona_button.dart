@@ -1,26 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
-import '../model_controller.dart';
+import '../../models/persona.dart';
+import '../../services/persona_service.dart';
 
-class DeleteModelButton extends StatelessWidget {
-  final Model model;
+class DeletePersonaButton extends StatelessWidget {
+  final Persona persona;
 
-  const DeleteModelButton({super.key, required this.model});
+  const DeletePersonaButton({super.key, required this.persona});
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<ModelController>();
+    final controller = context.read<PersonaService>();
 
     return IconButton(
-      tooltip: 'Delete model',
+      tooltip: 'Delete Persona',
       onPressed: () async {
         final confirm = await showAdaptiveDialog<bool>(
           context: context,
           builder: (context) => CupertinoAlertDialog(
-            title: Text('Delete ${model.model} ? '),
+            title: Text('Delete ${persona.name} ? '),
             actions: [
               CupertinoDialogAction(
                 isDestructiveAction: true,
@@ -35,7 +35,8 @@ class DeleteModelButton extends StatelessWidget {
           ),
         );
         if (confirm ?? false) {
-          controller.deleteModel(model);
+          controller..deletePersona(persona)
+          ..loadPersonas();
         }
       },
       icon: const Icon(Icons.delete),

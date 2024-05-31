@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,16 +6,20 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 
-import '../../async_result.dart';
-import '../../db.dart';
-import '../../model.dart';
+import '../async_result.dart';
+import '../models/conversation.dart';
+import '../models/persona.dart';
+import '../services/conversation_service.dart';
+import '../services/persona_service.dart';
 
-Conversation emptyConversationWith(String model) => Conversation(
+Conversation emptyConversationWith(String model) =>
+    Conversation(
       lastUpdate: DateTime.now(),
       model: model,
       title: 'Chat',
       messages: [],
     );
+
 
 class ChatController {
   final _log = Logger('ChatController');
@@ -24,12 +27,18 @@ class ChatController {
   final OllamaClient _client;
 
   final ConversationService _conversationService;
+  final PersonaService _personaService;
 
   final promptFieldController = TextEditingController();
 
   ScrollController scrollController = ScrollController();
 
   ValueNotifier<XFile?> selectedImage = ValueNotifier(null);
+
+  final ValueNotifier<AsyncData<List<Persona>>> personas =
+  ValueNotifier(const Data([]));
+
+  final ValueNotifier<Persona?> persona;
 
   final ValueNotifier<Model?> model;
 
@@ -40,19 +49,25 @@ class ChatController {
   final ValueNotifier<bool> loading = ValueNotifier(false);
 
   final ValueNotifier<AsyncData<List<Conversation>>> conversations =
-      ValueNotifier(const Data([]));
+  ValueNotifier(const Data([]));
 
   ChatController({
     required OllamaClient client,
     required this.model,
+    required this.persona,
     required ConversationService conversationService,
+    required PersonaService personaService,
     Conversation? initialConversation,
-  })  : _client = client,
+  })
+      : _client = client,
         _conversationService = conversationService,
+        _personaService = personaService,
         conversation = ValueNotifier(
           initialConversation ??
               emptyConversationWith(model.value?.model ?? '/'),
-        );
+        )
+  ;
+
 
   Future<void> loadHistory() async {
     conversations.value = const Pending();
@@ -66,7 +81,18 @@ class ChatController {
     }
   }
 
+
+  Future<void> loadAllPersona() async {
+    personas.value = const Pending();
+    try {
+      personas.value = Data(await _personaService.findPersonas());
+    } catch (err) {
+      _log.severe('Impossible de charger les personas $err');
+    }
+  }
+
   Future<void> chat() async {
+
     if (model.value == null) return;
     scrollController = ScrollController();
 
@@ -85,13 +111,12 @@ class ChatController {
         b64Image = base64Encode(await image.readAsBytes());
       }
 
-
       final generateChatCompletionRequest = GenerateChatCompletionRequest(
         model: name,
         messages: [
-          const Message(
+           Message(
             role: MessageRole.system,
-            content:  "Tu est une assistante qui se nomme Abby. Réponds à l'utilisateur toujours en langue française en utilisant le Markdown. ",
+            content: _personaService.currentPersona.value!.prompt,
           ),
           Message(
             role: MessageRole.user,
@@ -107,8 +132,8 @@ class ChatController {
 
       await for (final chunk in streamResponse) {
         lastReply.value = (
-          lastReply.value.$1,
-          '${lastReply.value.$2}${chunk.message?.content ?? ''}'
+        lastReply.value.$1,
+        '${lastReply.value.$2}${chunk.message?.content ?? ''}'
         );
         scrollToEnd();
       }
@@ -119,7 +144,7 @@ class ChatController {
       conversation.value = conversation.value.copyWith(
         newMessages: messages..add(lastReply.value),
         newTitle:
-            firstQuestion /*firstQuestion.substring(0, min(firstQuestion.length, 20))*/,
+        firstQuestion /*firstQuestion.substring(0, min(firstQuestion.length, 20))*/,
       );
 
       _conversationService.saveConversation(conversation.value);
@@ -163,9 +188,9 @@ class ChatController {
     );
   }
 
-  Future<void> deleteConversation(Conversation deletecConversation) async {
+  Future<void> deleteConversation(Conversation conversationToDelete) async {
     conversation.value = emptyConversationWith(model.value?.model ?? '/');
-    await _conversationService.deleteConversation(deletecConversation);
+    await _conversationService.deleteConversation(conversationToDelete);
     loadHistory();
   }
 }

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:link_text/link_text.dart';
 import 'package:provider/provider.dart';
 
-import '../model_controller.dart';
-import '../widgets/add_model_dialog.dart';
+import '../../controller/model_controller.dart';
+import '../../widgets/ollama_model/add_model_dialog.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String msg;
@@ -35,7 +38,7 @@ class ErrorScreen extends StatelessWidget {
                   padding: EdgeInsets.only(right: 12),
                   child: Icon(Icons.warning, color: Colors.deepOrange),
                 ),
-                Text(msg),
+                LinkText(msg),
               ],
             ),
             TextButton.icon(
@@ -58,7 +61,7 @@ class NollamaScreen extends StatelessWidget {
     final modelController = context.read<ModelController>();
 
     return ErrorScreen(
-      msg: "Error : can't load models. Install and launch Ollama",
+      msg: "Error : can't load models. Install and launch Ollama https://ollama.com/download ",
       errorAction: modelController.loadModels,
       errorActionLabel: 'Retry',
       errorActionIcon: Icons.refresh,
@@ -74,7 +77,7 @@ class NoModelErrorScreen extends StatelessWidget {
     final modelController = context.read<ModelController>();
 
     return ErrorScreen(
-      msg: 'Error : No model available',
+      msg: 'Error : No model available https://ollama.com/library',
       errorAction: () async {
         await showDialog(
           context: context,

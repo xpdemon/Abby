@@ -1,35 +1,33 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
-import '../async_result.dart';
-import '../model.dart';
-import '../model_controller.dart';
-import 'add_model_dialog.dart';
-import 'delete_model_button.dart';
-import 'model_info_view.dart';
-import 'model_list.dart';
+import '../../async_result.dart';
+import '../../models/persona.dart';
+import '../../services/persona_service.dart';
+import 'add_persona_dialog.dart';
+import 'delete_persona_button.dart';
 
-class ModelMenuDrawer extends StatelessWidget {
-  const ModelMenuDrawer({super.key});
+
+class PersonaDrawer extends StatelessWidget {
+  const PersonaDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<ModelController>();
+    final controller = context.read<PersonaService>();
     final filterNotifier = ValueNotifier('');
 
     return Drawer(
       width: 360,
       child: ListenableBuilder(
         listenable: Listenable.merge(
-          [controller.models, controller.currentModel],
+          [controller.personas, controller.currentPersona],
         ),
         builder: (context, _) {
-          final models = controller.models.value;
+          final personas = controller.personas.value;
 
-          return switch (models) {
+          return switch (personas) {
             Data(:final data) => Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -41,7 +39,7 @@ class ModelMenuDrawer extends StatelessWidget {
                               filterNotifier.value = value,
                         ),
                       ),
-                      const _AddModelButton(),
+                      const _AddPersonaButton(),
                       const SizedBox(width: 10),
                     ],
                   ),
@@ -49,16 +47,13 @@ class ModelMenuDrawer extends StatelessWidget {
                     child: ValueListenableBuilder(
                       valueListenable: filterNotifier,
                       builder: (context, filter, _) {
-                        bool match(Model element) => (element.model ?? '/')
-                            .toLowerCase()
-                            .contains(filter.toLowerCase());
-
-                        final models =
+                        bool match(Persona element) => element.name
+                            .toLowerCase().startsWith(filter);
+                        final personas =
                             filter.isEmpty ? data : data.where(match).toList();
-
-                        return _ModelList(
-                          currentModel: controller.currentModel.value,
-                          models: models,
+                        return _PersonaList(
+                          currentPersona: controller.currentPersona.value,
+                          personas: personas,
                         );
                       },
                     ),
@@ -79,106 +74,95 @@ class ModelMenuDrawer extends StatelessWidget {
   }
 }
 
-class _AddModelButton extends StatelessWidget {
-  const _AddModelButton();
+class _AddPersonaButton extends StatelessWidget {
+  const _AddPersonaButton();
 
   @override
   Widget build(BuildContext context) => IconButton.filledTonal(
         icon: const Icon(Icons.add),
-        tooltip: 'Pull a new model',
+        tooltip: 'Create a new Persona',
         onPressed: () {
           Navigator.of(context).pop();
           showDialog(
             context: context,
             barrierDismissible: false,
-            builder: (context) => Provider(
-              create: (context) => AddModelController(context.read()),
-              child: AddModelDialog(),
-            ),
+            builder: (BuildContext context) {
+              return AddPersonaDialog();
+            },
           );
         },
       );
 }
 
-class _ModelList extends StatelessWidget {
-  final List<Model> models;
+class _PersonaList extends StatelessWidget {
+  final List<Persona> personas;
 
-  final Model? currentModel;
+  final Persona? currentPersona;
 
-  const _ModelList({
-    required this.models,
-    required this.currentModel,
+  const _PersonaList({
+    required this.personas,
+    required this.currentPersona,
   });
 
   @override
   Widget build(BuildContext context) => ListView(
-        children: models
+        children: personas
             .map(
-              (model) => _ModelTile(
-                model: model,
-                selected: currentModel == model,
+              (persona) => _PersonaTile(
+                persona: persona,
+                selected: currentPersona == persona,
               ),
             )
             .toList(),
       );
 }
 
-class _ModelTile extends StatefulWidget {
-  final Model model;
+class _PersonaTile extends StatefulWidget {
+  final Persona persona;
 
   final bool selected;
 
-  const _ModelTile({required this.model, required this.selected});
+  const _PersonaTile({required this.persona, required this.selected});
 
   @override
-  _ModelTileState createState() => _ModelTileState();
+  _PersonaTileState createState() => _PersonaTileState();
 }
 
-class _ModelTileState extends State<_ModelTile> {
+class _PersonaTileState extends State<_PersonaTile> {
   bool hovered = false;
 
-  late Model model;
+  late Persona persona;
 
   @override
   void initState() {
     super.initState();
-    model = widget.model;
+    persona = widget.persona;
   }
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<ModelController>();
+    final controller = context.read<PersonaService>();
 
     return MouseRegion(
       onHover: (_) => setState(() => hovered = true),
       onExit: (_) => setState(() => hovered = false),
       child: ListTile(
-        title: Text(model.model ?? '/'),
+        title: Text(persona.name),
         subtitle: Text(
-          '${(model.size ?? 0).asDiskSize()} - updated ${model.formattedLastUpdate}',
+          '${persona.name} - updated ${persona.formattedDate}',
         ),
         dense: true,
-        leading: const Icon(Icons.psychology),
+        leading: const Icon(Icons.person),
         trailing: hovered || widget.selected
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  IconButton(
-                    onPressed: () => unawaited(
-                      showDialog(
-                        context: context,
-                        builder: (final context) => ModelInfoView(model: model),
-                      ),
-                    ),
-                    icon: const Icon(Icons.info),
-                    color: Colors.cyan.shade700,
-                  ),
-                  DeleteModelButton(model: model),
+                  DeletePersonaButton(persona: persona),
                 ],
               )
             : null,
         selected: widget.selected,
-        onTap: () => unawaited(controller.selectModel(model)),
+        onTap: () => unawaited(controller.selectPersona(persona)),
       ),
     );
   }
@@ -197,7 +181,7 @@ class _FilterField extends StatelessWidget {
         child: TextField(
           controller: controller,
           decoration: InputDecoration(
-            label: const Text('Search model'),
+            label: const Text('Search Persona'),
             prefixIcon: const Icon(Icons.search),
             suffixIcon: IconButton(
               onPressed: () {
