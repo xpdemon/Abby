@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
-import '../model_controller.dart';
+import '../../controller/model_controller.dart';
 
 class DeleteModelButton extends StatelessWidget {
   final Model model;

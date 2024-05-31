@@ -4,9 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import 'db.dart';
-import 'model_controller.dart';
-import 'theme.dart';
+import 'controller/model_controller.dart';
+import 'services/conversation_service.dart';
+import 'services/persona_service.dart';
+import 'util/theme.dart';
 
 class RootProvider extends StatefulWidget {
   final SharedPreferences prefs;

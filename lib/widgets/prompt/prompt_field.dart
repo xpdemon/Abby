@@ -4,7 +4,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../screens/chat/chat_controller.dart';
+import '../../controller/chat_controller.dart';
 
 const imageTypes = XTypeGroup(label: 'images', extensions: ['jpg', 'png']);
 

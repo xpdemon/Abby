@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../model.dart';
+import '../../models/persona.dart';
 
 class PersonaMenu extends StatelessWidget {
   final Persona selection;

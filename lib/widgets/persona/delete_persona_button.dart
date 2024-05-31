@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
-import '../db.dart';
-import '../model.dart';
-import '../model_controller.dart';
+import '../../models/persona.dart';
+import '../../services/persona_service.dart';
 
 class DeletePersonaButton extends StatelessWidget {
   final Persona persona;

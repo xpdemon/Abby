@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,9 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 
-import '../../async_result.dart';
-import '../../db.dart';
-import '../../model.dart';
+import '../async_result.dart';
+import '../models/conversation.dart';
+import '../models/persona.dart';
+import '../services/conversation_service.dart';
+import '../services/persona_service.dart';
 
 Conversation emptyConversationWith(String model) =>
     Conversation(
@@ -187,9 +188,9 @@ class ChatController {
     );
   }
 
-  Future<void> deleteConversation(Conversation deletecConversation) async {
+  Future<void> deleteConversation(Conversation conversationToDelete) async {
     conversation.value = emptyConversationWith(model.value?.model ?? '/');
-    await _conversationService.deleteConversation(deletecConversation);
+    await _conversationService.deleteConversation(conversationToDelete);
     loadHistory();
   }
 }

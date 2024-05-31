@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
-import '../async_result.dart';
-import '../model.dart';
-import '../model_controller.dart';
+import '../../async_result.dart';
+import '../../models/model.dart';
+import '../../controller/model_controller.dart';
 import 'delete_model_button.dart';
 import 'model_list.dart';
 

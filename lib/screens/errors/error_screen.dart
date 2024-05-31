@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../model_controller.dart';
-import '../widgets/add_model_dialog.dart';
+import '../../controller/model_controller.dart';
+import '../../widgets/ollama_model/add_model_dialog.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String msg;

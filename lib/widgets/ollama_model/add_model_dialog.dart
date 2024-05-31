@@ -5,8 +5,8 @@ import 'package:logging/logging.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
-import '../async_result.dart';
-import '../model_controller.dart';
+import '../../async_result.dart';
+import '../../controller/model_controller.dart';
 
 class AddModelController {
   final _log = Logger('AddModelController');

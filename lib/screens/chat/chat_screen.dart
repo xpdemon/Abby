@@ -3,18 +3,18 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:provider/provider.dart';
 
-import '../../db.dart';
+import '../../controller/chat_controller.dart';
+import '../../controller/model_controller.dart';
 import '../../markdown/code_element_builder.dart';
 import '../../markdown/highlighter.dart';
-import '../../model_controller.dart';
-import '../../theme.dart';
-import '../../themes.dart';
+import '../../services/persona_service.dart';
+import '../../util/theme.dart';
+import '../../util/themes.dart';
 import '../../widgets/chat_history/chat_history_view.dart';
-import '../../widgets/model_drawer.dart';
-import '../../widgets/model_info_view.dart';
-import '../../widgets/persona_drawer.dart';
-import '../../widgets/prompt_field.dart';
-import 'chat_controller.dart';
+import '../../widgets/ollama_model/model_drawer.dart';
+import '../../widgets/ollama_model/model_info_view.dart';
+import '../../widgets/persona/persona_drawer.dart';
+import '../../widgets/prompt/prompt_field.dart';
 
 class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});

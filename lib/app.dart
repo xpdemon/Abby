@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'async_result.dart';
-import 'db.dart';
-import 'model_controller.dart';
-import 'screens/chat/chat_controller.dart';
+import 'controller/model_controller.dart';
+import 'controller/chat_controller.dart';
 import 'screens/chat/chat_screen.dart';
-import 'screens/error_screen.dart';
-import 'theme.dart';
+import 'screens/errors/error_screen.dart';
+import 'services/persona_service.dart';
+import 'util/theme.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
