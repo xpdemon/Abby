@@ -1,6 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../services/persona_service.dart';
 import 'add_persona_form.dart';
 
 class AddPersonaDialog extends StatelessWidget {
@@ -11,6 +12,7 @@ class AddPersonaDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final PersonaService personaService = context.read<PersonaService>();
     final textTheme = Theme.of(context).textTheme;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -27,9 +29,9 @@ class AddPersonaDialog extends StatelessWidget {
                   style: textTheme.titleMedium,
                 ),
                 IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+                  onPressed: personaService.currentPersona.value == null
+                      ? null
+                      : () => Navigator.of(context).pop(),
                   icon: const Icon(Icons.close),
                 ),
               ],

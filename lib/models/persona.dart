@@ -12,8 +12,9 @@ class Persona {
   final String hobby;
   final String personality;
   final String job;
+  final String sexe;
   late List<String> userProperties;
-  final int isDefault;
+  late int isDefault;
 
   String get formattedDate => DateFormat('dd/MM/yyyy').format(lastUpdate);
 
@@ -24,6 +25,7 @@ class Persona {
     required this.personality,
     required this.job,
     required this.isDefault,
+    required this.sexe,
     String? prompt,
     String? portraitId,
     String? id,
@@ -35,7 +37,7 @@ class Persona {
 
   @override
   String toString() {
-    return 'Persona{id: $id, lastUpdate: $lastUpdate,name: $name, prompt: $prompt, portraitId: $portraitId, hobby: $hobby, job: $job, personality: $personality, userProperties: $userProperties, isDefault: $isDefault}';
+    return 'Persona{id: $id, sexe: $sexe,lastUpdate: $lastUpdate,name: $name, prompt: $prompt, portraitId: $portraitId, hobby: $hobby, job: $job, personality: $personality, userProperties: $userProperties, isDefault: $isDefault}';
   }
 
   Map<String, dynamic> toMap() => {
@@ -48,7 +50,8 @@ class Persona {
     'job': job,
     'personality': personality,
     'userProperties': jsonEncode(userProperties),
-    'isDefault': isDefault.toString(),
+    'isDefault': isDefault,
+    'sexe': sexe,
   };
 
   factory Persona.fromMap(Map<String, dynamic> data) {
@@ -63,6 +66,7 @@ class Persona {
       personality: data['personality'],
       userProperties: List.from(jsonDecode(data['userProperties'])),
       isDefault: data['isDefault'],
+      sexe: data['sexe'],
     );
   }
 }

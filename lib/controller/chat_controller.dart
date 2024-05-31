@@ -92,6 +92,7 @@ class ChatController {
   }
 
   Future<void> chat() async {
+
     if (model.value == null) return;
     scrollController = ScrollController();
 
@@ -113,10 +114,9 @@ class ChatController {
       final generateChatCompletionRequest = GenerateChatCompletionRequest(
         model: name,
         messages: [
-          const Message(
+           Message(
             role: MessageRole.system,
-            content:
-            "Tu est une assistante qui se nomme Abby. Réponds à l'utilisateur toujours en langue française en utilisant le Markdown. ",
+            content: _personaService.currentPersona.value!.prompt,
           ),
           Message(
             role: MessageRole.user,

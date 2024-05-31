@@ -1,6 +1,6 @@
 enum PersonaJob {
-  aviator('Pilote de ligne'),
-  ops('Administrateur systemes et reseaux '),
+  aviateur('Pilote de ligne'),
+  ops('Administrateur systemes et reseaux informatique'),
   developpeur('developpeur informatique'),
   medecin('medecin'),
   financier('trader'),

@@ -9,8 +9,6 @@ import '../../models/persona_jobs.dart';
 import '../../models/persona_personality.dart';
 import '../../services/persona_service.dart';
 
-
-
 class AddPersonaForm extends StatefulWidget {
   const AddPersonaForm({super.key});
 
@@ -38,6 +36,8 @@ class AddPersonaFormState extends State<AddPersonaForm> {
     final ValueNotifier<String> personality = ValueNotifier('');
     final ValueNotifier<String> job = ValueNotifier('');
     final ValueNotifier<String> hobby = ValueNotifier('');
+    final ValueNotifier<String> sexe = ValueNotifier('');
+
     // Build a Form widget using the _formKey created above.
     return Form(
       key: _formKey,
@@ -47,6 +47,7 @@ class AddPersonaFormState extends State<AddPersonaForm> {
           children: [
             TextFormField(
               onChanged: (value) => name.value = value,
+
               decoration: InputDecoration(
                 label: Text(
                   'Name',
@@ -113,7 +114,7 @@ class AddPersonaFormState extends State<AddPersonaForm> {
             DropdownButtonFormField(
               decoration: InputDecoration(
                 label: Text(
-                  "centres d'interets",
+                  "centres d'intérêts",
                   style: textTheme.titleSmall,
                 ),
                 icon: const Icon(Icons.deck),
@@ -134,6 +135,32 @@ class AddPersonaFormState extends State<AddPersonaForm> {
                 return null;
               },
             ),
+            DropdownButtonFormField(
+              decoration: InputDecoration(
+                label: Text(
+                  "sexe",
+                  style: textTheme.titleSmall,
+                ),
+                icon: const Icon(Icons.female),
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: 'Une femme',
+                  child: Text('Femme'),
+                ),
+                DropdownMenuItem(
+                  value: 'Un Homme',
+                  child: Text('Homme'),
+                ),
+              ],
+              onChanged: (value) => sexe.value = value!,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select a Hobby';
+                }
+                return null;
+              },
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: 16,
@@ -141,29 +168,42 @@ class AddPersonaFormState extends State<AddPersonaForm> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    var persona = Persona(
+                    // Validate returns true if the form is valid, or false otherwise.
+                    if (_formKey.currentState!.validate()) {
+                      progress();
+                      var persona = Persona(
                         name: name.value,
+                        sexe: sexe.value,
                         lastUpdate: DateTime.now(),
                         hobby: hobby.value,
                         personality: personality.value,
                         job: job.value,
-                        isDefault: 1,);
-                    persona = personaService.generatePersonaPrompt(persona);
-                    await personaService.savePersona(persona);
-                    await personaService.loadPersonas();
-                    // Validate returns true if the form is valid, or false otherwise.
-                    if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Processing Data')),
+                        isDefault: 1,
                       );
+                      persona = personaService.generatePersonaPrompt(persona);
+                      await personaService.savePersona(persona);
+                      await personaService.loadPersonas();
+                      close();
                     }
                   },
-                  child: const Text('Submit'),
+                  child: const Text('Save'),
                 ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void close() {
+    Navigator.pop(context);
+  }
+
+  void progress() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Persona Save'),
       ),
     );
   }

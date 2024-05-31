@@ -22,7 +22,7 @@ class PersonaDrawer extends StatelessWidget {
       width: 360,
       child: ListenableBuilder(
         listenable: Listenable.merge(
-          [controller.personas, controller.defaultPersona],
+          [controller.personas, controller.currentPersona],
         ),
         builder: (context, _) {
           final personas = controller.personas.value;
@@ -39,7 +39,6 @@ class PersonaDrawer extends StatelessWidget {
                               filterNotifier.value = value,
                         ),
                       ),
-                      //TODO CREATE PERSONA
                       const _AddPersonaButton(),
                       const SizedBox(width: 10),
                     ],
@@ -49,13 +48,11 @@ class PersonaDrawer extends StatelessWidget {
                       valueListenable: filterNotifier,
                       builder: (context, filter, _) {
                         bool match(Persona element) => element.name
-                            .toLowerCase()
-                            .contains(filter.toLowerCase());
-
+                            .toLowerCase().startsWith(filter);
                         final personas =
                             filter.isEmpty ? data : data.where(match).toList();
                         return _PersonaList(
-                          currentPersona: controller.defaultPersona.value,
+                          currentPersona: controller.currentPersona.value,
                           personas: personas,
                         );
                       },
@@ -184,7 +181,7 @@ class _FilterField extends StatelessWidget {
         child: TextField(
           controller: controller,
           decoration: InputDecoration(
-            label: const Text('Search model'),
+            label: const Text('Search Persona'),
             prefixIcon: const Icon(Icons.search),
             suffixIcon: IconButton(
               onPressed: () {

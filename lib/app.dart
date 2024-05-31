@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,11 +36,11 @@ class App extends StatelessWidget {
                         client: modelController.client,
                         conversationService: context.read(),
                         personaService: context.read(),
-                        persona: personaService.defaultPersona,
+                        persona: personaService.currentPersona,
                         model: modelController.currentModel,
                       )
                         ..loadHistory()
-                        ..loadAllPersona(),
+                        ,
                       child: const ChatScreen(),
                     ),
             ),
@@ -49,4 +51,6 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     );
   }
+
+
 }

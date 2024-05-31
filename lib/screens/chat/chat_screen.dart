@@ -13,6 +13,7 @@ import '../../util/themes.dart';
 import '../../widgets/chat_history/chat_history_view.dart';
 import '../../widgets/ollama_model/model_drawer.dart';
 import '../../widgets/ollama_model/model_info_view.dart';
+import '../../widgets/persona/add_persona_dialog.dart';
 import '../../widgets/persona/persona_drawer.dart';
 import '../../widgets/prompt/prompt_field.dart';
 
@@ -25,7 +26,6 @@ class ChatScreen extends StatelessWidget {
     final modelController = context.read<ModelController>();
     final chatController = context.read<ChatController>();
     final personaService = context.read<PersonaService>();
-
     return Scaffold(
       appBar: const MainAppBar(),
       drawer: const ModelMenuDrawer(),
@@ -41,13 +41,14 @@ class ChatScreen extends StatelessWidget {
             onDeleteChat: chatController.deleteConversation,
             onNewChat: chatController.newConversation,
           ),
-
           Column(
             verticalDirection: VerticalDirection.up,
             children: [
               Image.asset(
                 'assets/persona/Abby.webp',
-                fit: BoxFit.contain,width: 300,height: 400,
+                fit: BoxFit.contain,
+                width: 300,
+                height: 400,
               ),
             ],
           ),
@@ -64,7 +65,16 @@ class ChatScreen extends StatelessWidget {
                 final messages = chatController.conversation.value.messages;
                 final model = chatController.conversation.value.model;
                 final date = chatController.conversation.value.formattedDate;
+                final currentPersona = personaService.currentPersona.value;
 
+                Future.delayed(Duration.zero, () async {
+                  if (currentPersona == null) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) => AddPersonaDialog(),
+                    );
+                  }
+                });
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -162,11 +172,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   )
                 : const SizedBox.shrink(),
           ),
-          IconButton(onPressed: Scaffold.of(context).openEndDrawer, icon: const Icon(Icons.accessibility_new_outlined)),
+          IconButton(
+            onPressed: Scaffold.of(context).openEndDrawer,
+            icon: const Icon(Icons.accessibility_new_outlined),
+          ),
         ],
       ),
       centerTitle: false,
-      actions:  const [
+      actions: const [
         ThemeButton(),
       ],
     );

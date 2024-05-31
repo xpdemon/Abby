@@ -52,7 +52,8 @@ CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
   personality TEXT,
   job TEXT,
   userProperties TEXT,
-  isDefault INTEGER
+  isDefault INTEGER,
+  sexe TEXT
 )
 
 ''');

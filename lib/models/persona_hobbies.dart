@@ -1,8 +1,8 @@
 enum PersonaHobbies {
-  jeuxVideo('jeux video'),
-  voyages('voyages'),
-  series('series tv'),
-  musique('musique'),
+  jeuxVideo('les jeux video'),
+  voyages('les voyages'),
+  series('les series tv'),
+  musique('la musique'),
   ;
 
   const PersonaHobbies(this.label);

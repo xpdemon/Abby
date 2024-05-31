@@ -35,7 +35,8 @@ class DeletePersonaButton extends StatelessWidget {
           ),
         );
         if (confirm ?? false) {
-          controller.deletePersona(persona);
+          controller..deletePersona(persona)
+          ..loadPersonas();
         }
       },
       icon: const Icon(Icons.delete),
