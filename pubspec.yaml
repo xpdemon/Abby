@@ -55,6 +55,3 @@ flutter:
         - asset: assets/fonts/SourceCodePro.ttf
         - asset: assets/fonts/SourceCodePro-Italic.ttf
           style: italic
-
-  app_installer:
-    publish_folder_path : D:\dev\
