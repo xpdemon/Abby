@@ -38,6 +38,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  msix: ^3.16.7
 
   flutter_lints: ^4.0.0
 
@@ -55,3 +56,18 @@ flutter:
         - asset: assets/fonts/SourceCodePro-Italic.ttf
           style: italic
 
+msix_config:
+  display_name: Abby
+  publisher_display_name: xpdemon Software
+  store: false # Set to true to deploy to Microsoft Store
+  msix_version: 1.0.0.0
+  icons_background_color: "#ffffff"
+  architecture: x64
+  # See https://docs.microsoft.com/en-us/windows/uwp/packaging/app-capability-declarations
+  logo_path: D:\dev\Abby\assets\app_icons\abbylogo.png
+  capabilities: internetClient,privateNetworkClientServer
+  certificate_path: D:\dev\Abby\cert\abby.pfx
+  certificate_password: rxg6k3gm
+
+  app_installer:
+    publish_folder_path : D:\dev\
