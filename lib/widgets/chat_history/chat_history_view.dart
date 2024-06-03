@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../async_result.dart';
-import '../../models/model.dart';
-import '../../models/conversation.dart';
 import '../../controller/chat_controller.dart';
+import '../../models/conversation.dart';
 
 class ChatHistoryView extends StatefulWidget {
   final ValueChanged<Conversation> onChatSelection;

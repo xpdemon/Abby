@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'async_result.dart';
-import 'controller/model_controller.dart';
 import 'controller/chat_controller.dart';
+import 'controller/model_controller.dart';
 import 'screens/chat/chat_screen.dart';
 import 'screens/errors/error_screen.dart';
 import 'services/persona_service.dart';

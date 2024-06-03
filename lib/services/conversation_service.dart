@@ -1,7 +1,7 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../util/db.dart';
 import '../models/conversation.dart';
+import '../util/db.dart';
 
 class ConversationService {
   final Database _db;

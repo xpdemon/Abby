@@ -1,12 +1,11 @@
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
+import 'root_provider.dart';
 import 'util/db.dart';
 import 'util/log.dart';
-import 'root_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +18,7 @@ void main() async {
     RootProvider(
       prefs: prefs,
       db: db,
-      ollamaBaseUrl: 'http://127.0.0.1:11434/api',
+      ollamaBaseUrl: 'http://100.76.61.107:11434/api',
       child: const App(),
     ),
   );

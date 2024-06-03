@@ -3,8 +3,8 @@ import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
 import '../../async_result.dart';
-import '../../models/model.dart';
 import '../../controller/model_controller.dart';
+import '../../models/model.dart';
 import 'delete_model_button.dart';
 import 'model_list.dart';
 

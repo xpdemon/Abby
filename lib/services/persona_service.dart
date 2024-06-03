@@ -1,12 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../async_result.dart';
-import '../util/db.dart';
 import '../models/persona.dart';
+import '../util/db.dart';
 
 class PersonaService {
   final Database _db;
@@ -50,9 +48,9 @@ class PersonaService {
       persona.isDefault = 1;
       await savePersona(persona);
       currentPersona.value = persona;
-      print('OLD ==> ${current}');
+      print('OLD ==> $current');
 
-      print('NEW ==> ${persona}');
+      print('NEW ==> $persona');
 
       (await SharedPreferences.getInstance())
           .setString('currentPersona', persona.id);

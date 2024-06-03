@@ -138,7 +138,7 @@ class AddPersonaFormState extends State<AddPersonaForm> {
             DropdownButtonFormField(
               decoration: InputDecoration(
                 label: Text(
-                  "sexe",
+                  'sexe',
                   style: textTheme.titleSmall,
                 ),
                 icon: const Icon(Icons.female),
