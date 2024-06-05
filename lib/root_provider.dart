@@ -6,6 +6,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'controller/model_controller.dart';
 import 'services/conversation_service.dart';
+import 'services/ollama_server_service.dart';
 import 'services/persona_service.dart';
 import 'util/theme.dart';
 
@@ -31,12 +32,19 @@ class RootProvider extends StatefulWidget {
 }
 
 class _RootProviderState extends State<RootProvider> {
-  late final ollamaClient = OllamaClient(baseUrl: widget.ollamaBaseUrl);
-
   late final ConversationService conversationService =
       ConversationService(widget.db);
 
-  late final PersonaService personaService = PersonaService(widget.db, widget.prefs)..init();
+  late final PersonaService personaService =
+      PersonaService(widget.db, widget.prefs)..init();
+
+  late final OllamaServerService ollamaServerService =
+      OllamaServerService(widget.db, widget.prefs)..init();
+
+  late final ollamaClient = OllamaClient(
+      baseUrl: ollamaServerService.currentServer.value?.url.isEmpty == null
+          ? 'http://localhost:11434/api'
+          : '${ollamaServerService.currentServer.value?.url}/api',);
 
   late final modelController = ModelController(
     client: ollamaClient,
@@ -51,6 +59,7 @@ class _RootProviderState extends State<RootProvider> {
           Provider.value(value: widget.prefs),
           Provider.value(value: modelController),
           Provider.value(value: personaService),
+          Provider.value(value: ollamaServerService),
           ChangeNotifierProvider(
             create: (context) => ThemeController(Brightness.dark),
           ),

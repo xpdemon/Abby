@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:link_text/link_text.dart';
 import 'package:logging/logging.dart';
 import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
@@ -86,9 +87,9 @@ class AddModelDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Pull a new model',
-                  style: textTheme.titleMedium,
+                LinkText(
+                  'Pull a new model : https://ollama.com/library',
+                  textStyle: textTheme.titleMedium,
                 ),
                 IconButton(
                   onPressed: () {

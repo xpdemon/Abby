@@ -5,12 +5,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
-
 const dbFileName = 'db.db';
 
 final _log = Logger('Db');
 
-enum Table { conversation, persona }
+enum Table {
+  conversation,
+  persona,
+  ollamaServer,
+}
 
 /// sqlite DB abstraction
 Future<Database> initDB() async {
@@ -56,5 +59,13 @@ CREATE TABLE IF NOT EXISTS ${Table.persona.name}(
   sexe TEXT
 )
 
-''');
+''')
+    ..execute('''
+CREATE TABLE IF NOT EXISTS ${Table.ollamaServer.name}(
+  id TEXT NOT NULL PRIMARY KEY,    
+  lastUse TEXT NOT NULL,
+  name TEXT,
+  url TEXT
+  )
+    ''');
 }

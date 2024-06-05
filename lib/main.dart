@@ -18,7 +18,6 @@ void main() async {
     RootProvider(
       prefs: prefs,
       db: db,
-      ollamaBaseUrl: 'http://100.76.61.107:11434/api',
       child: const App(),
     ),
   );

@@ -11,8 +11,7 @@ class ModelController {
 
   final SharedPreferences prefs;
 
-  final OllamaClient _client;
-  OllamaClient get client => _client;
+  late  OllamaClient client;
 
   final ValueNotifier<Model?> currentModel = ValueNotifier(null);
 
@@ -23,18 +22,23 @@ class ModelController {
       ValueNotifier(const Data(null));
 
   ModelController({
-    required OllamaClient client,
+    required this.client,
     required this.prefs,
-  }) : _client = client;
+  });
 
   Future<void> init() async {
     await loadModels();
   }
 
+  void changeClientUrl(String url){
+    client = OllamaClient(baseUrl: '$url/api');
+  }
+
+
   Future<void> loadModels() async {
     models.value = const Pending();
     try {
-      final response = await _client.listModels();
+      final response = await client.listModels();
 
       if (response.models?.isNotEmpty ?? false) {
         models.value = Data(List.unmodifiable(response.models!));
@@ -67,7 +71,7 @@ class ModelController {
     try {
       modelInfo.value = const Pending();
 
-      final info = await _client.showModelInfo(
+      final info = await client.showModelInfo(
         request: ModelInfoRequest(model: model.model!),
       );
       modelInfo.value = Data(info);
@@ -101,7 +105,7 @@ class ModelController {
     final name = model.model;
     if (name != null) {
       final request = DeleteModelRequest(model: name);
-      await _client.deleteModel(request: request);
+      await client.deleteModel(request: request);
 
       await loadModels();
     }
@@ -120,7 +124,7 @@ class ModelController {
     pullProgress.value = 0;
 
     try {
-      final streamResponse = _client.pullModelStream(
+      final streamResponse = client.pullModelStream(
         request: PullModelRequest(
           model: name,
           stream: true,
