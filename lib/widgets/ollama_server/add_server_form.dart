@@ -4,12 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/ollama_server.dart';
-import '../../models/persona.dart';
-import '../../models/persona_hobbies.dart';
-import '../../models/persona_jobs.dart';
-import '../../models/persona_personality.dart';
 import '../../services/ollama_server_service.dart';
-import '../../services/persona_service.dart';
 
 class AddServerForm extends StatefulWidget {
   const AddServerForm({super.key});

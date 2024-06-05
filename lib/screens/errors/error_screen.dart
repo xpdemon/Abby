@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:link_text/link_text.dart';
-import 'package:ollama_dart/ollama_dart.dart';
 import 'package:provider/provider.dart';
 
 import '../../async_result.dart';
