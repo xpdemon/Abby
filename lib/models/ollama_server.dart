@@ -5,7 +5,7 @@ class OllamaServer {
   final String id;
   final String name;
   final String url;
-  late  DateTime lastUse;
+  late DateTime lastUse;
 
   String get formattedDate => DateFormat('yyyy-MM-dd hh:mm:ss').format(lastUse);
 
@@ -19,7 +19,6 @@ class OllamaServer {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'OallamaServer{id: $id, url: $url, lastUse: $lastUse, name: $name}';
   }
 
