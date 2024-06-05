@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../util/theme.dart';
 import '../ollama_server/add_server_form.dart';
 import '../server/server_dropdown.dart';
 
@@ -30,11 +31,39 @@ class SettingsDialog extends StatelessWidget {
               ],
             ),
             const Divider(height: 18),
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Row(
+                children: [
+                  Text(
+                    'Serveur connexion',
+                    style: textTheme.titleSmall,
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 8),
             const Row(
               children: [
                 ServerDropdown(),
-              ]
-              ,
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Row(
+                children: [
+                  Text(
+                    'Theme',
+                    style: textTheme.titleSmall,
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 8),
+            const Row(
+              children: [
+                ThemeButton(),
+              ],
             ),
           ],
         ),

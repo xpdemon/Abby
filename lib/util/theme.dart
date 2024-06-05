@@ -47,6 +47,6 @@ class ThemeButton extends StatelessWidget {
     final icon =
         themeController.value.isDark ? Icons.light_mode : Icons.dark_mode;
 
-    return IconButton(onPressed: themeController.toggle, icon: Icon(icon));
+    return IconButton(onPressed: themeController.toggle, icon: Icon(icon),tooltip: 'Switch between dark or light theme',);
   }
 }

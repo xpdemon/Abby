@@ -17,13 +17,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
     final controller = context.read<ModelController>();
 
     return AppBar(
+      automaticallyImplyLeading: false,
       scrolledUnderElevation: 0,
-      leading: IconButton(
-        onPressed: () => showDialog(
-            context: context,
-            builder: (final context) => const SettingsDialog()),
-        icon: const Icon(Icons.settings),
-      ),
       title: Row(
         children: [
           Image.asset('assets/app_icons/abbylogo.png', width: 32),
@@ -38,12 +33,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             valueListenable: controller.currentModel,
             builder: (final context, currentModel, _) => currentModel != null
                 ? Row(
+
                     children: [
                       Text(
                         currentModel.model ?? '/',
                         style: const TextStyle(color: Colors.blueGrey),
                       ),
                       IconButton(
+                        tooltip: 'Show model infos',
                         onPressed: () => showDialog(
                           context: context,
                           builder: (final context) =>
@@ -56,20 +53,25 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 : const SizedBox.shrink(),
           ),
           IconButton(
+            onPressed: Scaffold.of(context).openDrawer,
+            icon: const Icon(Icons.psychology_sharp),
+            tooltip: 'Switch or pull model',
+          ),
+          IconButton(
             onPressed: Scaffold.of(context).openEndDrawer,
             icon: const Icon(Icons.accessibility_new_outlined),
             tooltip: 'switch or create persona',
           ),
-          IconButton(
-            onPressed: Scaffold.of(context).openDrawer,
-            icon: const Icon(Icons.psychology_sharp),
-            tooltip: 'Switch or create model',
-          ),
         ],
       ),
-      centerTitle: false,
-      actions: const [
-        ThemeButton(),
+      actions: [
+        IconButton(
+          tooltip: 'Settings',
+          onPressed: () => showDialog(
+              context: context,
+              builder: (final context) => const SettingsDialog()),
+          icon: const Icon(Icons.settings),
+        ),
       ],
     );
   }
