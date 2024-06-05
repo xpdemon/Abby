@@ -36,7 +36,7 @@ class SettingsDialog extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Serveur connexion',
+                    'Server connection',
                     style: textTheme.titleSmall,
                   ),
                 ],

@@ -85,7 +85,9 @@ class AddServerFormState extends State<AddServerForm> {
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
                       progress();
-                      final server = OllamaServer(name: name.value, url: url.value);
+                      final server = OllamaServer(
+                          name: name.value,
+                          url: ollamaService.verifyServerUrl(url.value),);
                       await ollamaService.addServer(server);
                       close();
                     }

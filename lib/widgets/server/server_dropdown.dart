@@ -92,6 +92,19 @@ class ServerDropdown extends StatelessWidget {
                     },
                   ),
                 ),
+                Padding(
+                  padding:
+                      const EdgeInsetsDirectional.symmetric(horizontal: 10),
+                  child: IconButton.filledTonal(
+                    icon: const Icon(Icons.remove),
+                    tooltip: 'Delete server',
+                    onPressed: () {
+                      ollamaServerService
+                        ..deleteServer(ollamaServerService.currentServer.value)
+                        ..loadServers();
+                    },
+                  ),
+                ),
               ],
             ),
           DataError() => const Icon(Icons.warning, color: Colors.deepOrange),

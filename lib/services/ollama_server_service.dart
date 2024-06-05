@@ -62,4 +62,20 @@ class OllamaServerService {
         .setString('currentServer', server.url);
     currentServer.value = server;
   }
+
+  Future<void> deleteServer(OllamaServer? server) async {
+    if (server == null) return;
+
+    _db.delete(
+      Table.ollamaServer.name,
+      where: 'id = ?',
+      whereArgs: [server.id],
+    );
+  }
+
+  String verifyServerUrl(String serverUrl) {
+    return serverUrl.startsWith(RegExp(r'^((http|https)://)(.*)$'))
+        ? serverUrl
+        : 'http://${serverUrl}';
+  }
 }
