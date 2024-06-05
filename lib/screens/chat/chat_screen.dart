@@ -8,11 +8,10 @@ import '../../controller/model_controller.dart';
 import '../../markdown/code_element_builder.dart';
 import '../../markdown/highlighter.dart';
 import '../../services/persona_service.dart';
-import '../../util/theme.dart';
 import '../../util/themes.dart';
+import '../../widgets/app_bar/main_app_bar.dart';
 import '../../widgets/chat_history/chat_history_view.dart';
 import '../../widgets/ollama_model/model_drawer.dart';
-import '../../widgets/ollama_model/model_info_view.dart';
 import '../../widgets/persona/add_persona_dialog.dart';
 import '../../widgets/persona/persona_drawer.dart';
 import '../../widgets/prompt/prompt_field.dart';
@@ -125,66 +124,7 @@ class ChatScreen extends StatelessWidget {
   }
 }
 
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
-  const MainAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = context.read<ModelController>();
-
-    return AppBar(
-      scrolledUnderElevation: 0,
-      leading: IconButton(
-        onPressed: Scaffold.of(context).openDrawer,
-        icon: const Icon(Icons.menu),
-      ),
-      title: Row(
-        children: [
-          Image.asset('assets/app_icons/abbylogo.png', width: 32),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              'Abby',
-              style: TextStyle(color: Colors.blueGrey.shade700),
-            ),
-          ),
-          ValueListenableBuilder(
-            valueListenable: controller.currentModel,
-            builder: (final context, currentModel, _) => currentModel != null
-                ? Row(
-                    children: [
-                      Text(
-                        currentModel.model ?? '/',
-                        style: const TextStyle(color: Colors.blueGrey),
-                      ),
-                      IconButton(
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (final context) =>
-                              ModelInfoView(model: currentModel),
-                        ),
-                        icon: const Icon(Icons.info),
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-          ),
-          IconButton(
-            onPressed: Scaffold.of(context).openEndDrawer,
-            icon: const Icon(Icons.accessibility_new_outlined),
-          ),
-        ],
-      ),
-      centerTitle: false,
-      actions: const [
-        ThemeButton(),
-      ],
-    );
-  }
-}
 
 class ChatHeader extends StatelessWidget {
   final String question;
