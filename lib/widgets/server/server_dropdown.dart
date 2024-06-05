@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../async_result.dart';
+import '../../controller/model_controller.dart';
 import '../../services/ollama_server_service.dart';
 import '../ollama_server/add_server_dialog.dart';
 
@@ -11,6 +12,7 @@ class ServerDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ModelController modelController = context.read<ModelController>();
     final OllamaServerService ollamaServerService =
         context.read<OllamaServerService>();
     final ValueNotifier<String> selectedServer =
@@ -49,7 +51,12 @@ class ServerDropdown extends StatelessWidget {
                     items: data
                         .map(
                           (p) => DropdownMenuItem(
-                            onTap: () => selectedServer.value = p.url,
+                            onTap: () => {
+                              selectedServer.value = p.url,
+                              modelController
+                                ..changeClientUrl(p.url)
+                                ..loadModels(),
+                            },
                             value: p.url,
                             child: Text(p.name),
                           ),

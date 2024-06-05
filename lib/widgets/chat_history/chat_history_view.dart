@@ -47,6 +47,7 @@ class _ChatHistoryViewState extends State<ChatHistoryView> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: IconButton(
+                      tooltip:'Show history' ,
                       onPressed: () => setState(() => minimized = false),
                       icon: const Icon(Icons.history),
                     ),
